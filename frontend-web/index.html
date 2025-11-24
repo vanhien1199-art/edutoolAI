@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ Lý AI - Git Version</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">My AI App</div>
+        <nav><a href="#" class="nav-btn" onclick="window.location.reload()">🏠 Home</a></nav>
+    </header>
+
+    <div class="container">
+        <div class="license-box">
+            <input type="text" id="licenseKey" class="license-input" placeholder="Nhập Mã Kích Hoạt...">
+            <span class="license-status">🔒 Secure</span>
+        </div>
+
+        <div class="chat-window" id="chatContainer">
+            <div class="message ai-msg">Xin chào! Hệ thống đã sẵn sàng từ GitHub.</div>
+        </div>
+
+        <div class="input-area">
+            <textarea id="userInput" rows="2" placeholder="Nhập câu hỏi..."></textarea>
+            <button id="send-btn" onclick="sendMessage()">GỬI</button>
+        </div>
+    </div>
+
+    <footer>
+        <div>© 2025 AI Startup.</div>
+        <div class="social-links">
+            <a href="#">Facebook</a> | <a href="#">Zalo</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

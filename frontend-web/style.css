@@ -1,0 +1,137 @@
+        /* --- CSS GIAO DIỆN --- */
+        :root {
+            --primary-color: #4285F4; /* Màu xanh Google */
+            --bg-color: #f4f6f9;
+            --chat-bg: #ffffff;
+        }
+        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* HEADER */
+        header { background-color: white; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: bold; font-size: 1.2rem; color: #333; }
+        .nav-btn { text-decoration: none; color: #555; font-weight: 500; padding: 8px 15px; border-radius: 5px; transition: 0.3s; }
+        .nav-btn:hover { background-color: #eee; }
+
+        /* MAIN CONTAINER */
+        .container { flex: 1; max-width: 800px; margin: 20px auto; width: 95%; display: flex; flex-direction: column; gap: 15px; }
+
+        /* LICENSE BOX */
+        .license-box { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; display: flex; gap: 10px; align-items: center; }
+        .license-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; }
+        .license-status { font-size: 0.9rem; color: #666; }
+
+        /* CHAT BOX */
+        .chat-window { background: var(--chat-bg); border-radius: 10px; flex: 1; min-height: 400px; padding: 20px; overflow-y: auto; border: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px 15px; border-radius: 10px; max-width: 70%; line-height: 1.5; }
+        .user-msg { background-color: var(--primary-color); color: white; align-self: flex-end; }
+        .ai-msg { background-color: #f1f1f1; color: #333; align-self: flex-start; }
+        .error-msg { background-color: #ffebee; color: #c62828; align-self: center; font-size: 0.9rem; }
+
+        /* INPUT AREA */
+        .input-area { display: flex; gap: 10px; background: white; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
+        textarea { flex: 1; border: 1px solid #eee; resize: none; padding: 10px; border-radius: 5px; outline: none; font-family: inherit; }
+        button#send-btn { background-color: var(--primary-color); color: white; border: none; padding: 0 25px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button#send-btn:disabled { background-color: #ccc; }
+
+        /* FOOTER */
+        footer { background-color: #333; color: white; text-align: center; padding: 20px; margin-top: auto; }
+        .social-links { margin-top: 10px; }
+        .social-links a { color: #fff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; border-bottom: 1px dotted #777; }
+ /* Bỏ thẻ <style> ở đầu và cuối đi nhé */
+:root { --primary-color: #4285F4; --bg-color: #f4f6f9; --chat-bg: #ffffff; }
+body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--bg-color); display: flex; flex-direction: column; min-height: 100vh; }
+/* ... (Dán tiếp phần còn lại) ... */
+</head>
+<body>
+
+    <header>
+        <div class="logo">My AI App</div>
+        <nav>
+            <a href="#" class="nav-btn" onclick="window.location.reload()">🏠 Home</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="license-box">
+            <input type="text" id="licenseKey" class="license-input" placeholder="Nhập Mã Kích Hoạt (Ví dụ: VIP-2025)...">
+            <span class="license-status">🔒 Yêu cầu khóa bảo mật</span>
+        </div>
+
+        <div class="chat-window" id="chatContainer">
+            <div class="message ai-msg">Xin chào! Vui lòng nhập mã kích hoạt để bắt đầu sử dụng.</div>
+        </div>
+
+        <div class="input-area">
+            <textarea id="userInput" rows="2" placeholder="Nhập câu hỏi của bạn..."></textarea>
+            <button id="send-btn" onclick="sendMessage()">GỬI</button>
+        </div>
+    </div>
+
+    <footer>
+        <div>© 2025 Công Ty AI Của Tôi. All rights reserved.</div>
+        <div class="social-links">
+            <a href="https://facebook.com/trangcuaban" target="_blank">Facebook</a> |
+            <a href="https://zalo.me/sodienthoaicuaban" target="_blank">Zalo Support</a>
+        </div>
+    </footer>
+
+    <script>
+        // --- CẤU HÌNH ---
+        // Thay link này bằng URL bạn nhận được từ Google Cloud Run
+        const BACKEND_URL = "https://THAY-URL-GOOGLE-CLOUD-CUA-BAN-VAO-DAY.run.app"; 
+
+        async function sendMessage() {
+            const licenseKey = document.getElementById('licenseKey').value.trim();
+            const inputField = document.getElementById('userInput');
+            const message = inputField.value.trim();
+            const chatBox = document.getElementById('chatContainer');
+            const btn = document.getElementById('send-btn');
+
+            if (!message) return;
+            if (!licenseKey) {
+                alert("Vui lòng nhập Mã Kích Hoạt trước!");
+                return;
+            }
+
+            // 1. Hiển thị tin nhắn người dùng
+            chatBox.innerHTML += `<div class="message user-msg">${message}</div>`;
+            inputField.value = '';
+            btn.disabled = true;
+            btn.innerText = "Đang xử lý...";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // 2. Gọi API sang Google Cloud
+                const response = await fetch(`${BACKEND_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message: message, 
+                        license_key: licenseKey 
+                    })
+                });
+
+                const data = await response.json();
+
+                // 3. Xử lý kết quả trả về
+                if (response.ok) {
+                    chatBox.innerHTML += `<div class="message ai-msg">${data.reply}</div>`;
+                } else {
+                    // Nếu sai mã kích hoạt hoặc lỗi server
+                    chatBox.innerHTML += `<div class="message error-msg">⚠️ Lỗi: ${data.detail || "Không thể kết nối server"}</div>`;
+                }
+
+            } catch (error) {
+                console.error(error);
+                chatBox.innerHTML += `<div class="message error-msg">⚠️ Lỗi kết nối mạng!</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "GỬI";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
