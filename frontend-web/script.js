@@ -1,6 +1,6 @@
 // --- CẤU HÌNH ---
 // Bạn dán link Google Cloud Run của bạn vào đây TRƯỚC khi đẩy lên GitHub
-const BACKEND_URL = "https://LINK-GOOGLE-CLOUD-CUA-BAN.run.app"; 
+const BACKEND_URL = "https://edutoolai-830472878190.us-central1.run.app"; 
 
 async function sendMessage() {
     const licenseKey = document.getElementById('licenseKey').value.trim();
@@ -44,4 +44,5 @@ async function sendMessage() {
         btn.innerText = "GỬI";
         chatBox.scrollTop = chatBox.scrollHeight;
     }
+
 }
