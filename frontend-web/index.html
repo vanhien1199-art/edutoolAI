@@ -3,328 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot Pro</title>
+    <title>Game Giáo Dục Generator</title>
     <style>
-        /* --- PHẦN GIAO DIỆN (CSS) --- */
-        :root {
-            --primary-color: #2563eb; /* Màu xanh chủ đạo */
-            --bg-color: #f3f4f6;
-            --chat-bg: #ffffff;
-            --text-color: #1f2937;
-        }
+        /* GIỮ NGUYÊN CSS CŨ VÀ THÊM CSS CHO FORM */
+        :root { --primary: #0284c7; --bg: #f0f9ff; --surface: #ffffff; --border: #e0f2fe; --text: #0f172a; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* LAYOUT */
+        .main-layout { display: flex; flex: 1; padding: 20px; gap: 20px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .input-panel { flex: 0 0 350px; background: var(--surface); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .output-panel { flex: 1; background: var(--surface); padding: 20px; border-radius: 12px; overflow-y: auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; }
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh; /* Chiều cao full màn hình */
-            color: var(--text-color);
-        }
+        /* FORM ELEMENTS */
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.85rem; font-weight: 600; color: #475569; }
+        select, input { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; outline: none; background: #fff; }
+        select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.1); }
+        
+        .row { display: flex; gap: 10px; }
+        .row > .form-group { flex: 1; }
 
-        /* HEADER */
-        header {
-            background-color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .btn-submit { margin-top: 10px; background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-submit:hover { background: #0369a1; }
+        .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .home-btn {
-            text-decoration: none;
-            color: #4b5563;
-            padding: 8px 16px;
-            border-radius: 6px;
-            background-color: #f3f4f6;
-            transition: 0.2s;
-            font-weight: 500;
-        }
-
-        .home-btn:hover {
-            background-color: #e5e7eb;
-        }
-
-        /* MAIN CONTAINER */
-        .container {
-            flex: 1; /* Chiếm hết khoảng trống còn lại */
-            max-width: 900px;
-            width: 100%;
-            margin: 20px auto;
-            display: flex;
-            flex-direction: column;
-            padding: 0 15px;
-            box-sizing: border-box;
-        }
-
-        /* LICENSE BOX */
-        .license-box {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .license-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .license-input:focus {
-            border-color: var(--primary-color);
-        }
-
-        /* CHAT AREA */
-        .chat-window {
-            flex: 1;
-            background: var(--chat-bg);
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            padding: 20px;
-            overflow-y: auto; /* Cho phép cuộn dọc */
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            line-height: 1.5;
-            position: relative;
-            word-wrap: break-word;
-        }
-
-        .ai-message {
-            background-color: #f3f4f6;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-
-        .user-message {
-            background-color: var(--primary-color);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        .error-message {
-            background-color: #fee2e2;
-            color: #991b1b;
-            align-self: center;
-            font-size: 0.9rem;
-        }
-
-        /* INPUT AREA */
-        .input-area {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 10px;
-        }
-
-        textarea {
-            flex: 1;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            padding: 10px;
-            resize: none;
-            font-family: inherit;
-            outline: none;
-        }
-
-        textarea:focus {
-            border-color: var(--primary-color);
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            background-color: #1d4ed8;
-        }
-
-        button:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        /* FOOTER */
-        footer {
-            background-color: #1f2937;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: auto;
-        }
-
-        .social-links a {
-            color: #9ca3af;
-            text-decoration: none;
-            margin: 0 10px;
-            transition: 0.2s;
-        }
-
-        .social-links a:hover {
-            color: white;
-        }
+        /* JSON VIEWER */
+        pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 0.9rem; }
+        .result-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 5px; }
+        .result-desc { color: #64748b; margin-bottom: 20px; font-style: italic; }
+        
+        .loading { display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.8); justify-content: center; align-items: center; font-weight: bold; color: var(--primary); flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">🤖 Trợ Lý AI</div>
-        <a href="#" onclick="window.location.reload()" class="home-btn">🏠 Trang chủ</a>
-    </header>
-
-    <div class="container">
-        <div class="license-box">
-            <span style="font-size: 1.2rem;">🔑</span>
-            <input type="text" id="licenseKey" class="license-input" placeholder="Nhập mã kích hoạt (Ví dụ: VIP-2025)...">
-        </div>
-
-        <div class="chat-window" id="chatContainer">
-            <div class="message ai-message">
-                Xin chào! Tôi là trợ lý ảo của bạn. Hãy nhập mã kích hoạt để bắt đầu trò chuyện nhé.
+    <div class="main-layout">
+        <div class="input-panel">
+            <h2 style="margin: 0 0 10px 0; color: var(--primary);">⚙️ Cấu Hình Game</h2>
+            
+            <div class="form-group">
+                <label>🔑 Mã kích hoạt</label>
+                <input type="text" id="licenseKey" placeholder="Ví dụ: VIP-2025">
             </div>
+
+            <div class="form-group">
+                <label>📚 Bộ sách (SGK)</label>
+                <select id="bookSeries">
+                    <option value="Kết nối tri thức với cuộc sống">Kết nối tri thức</option>
+                    <option value="Cánh Diều">Cánh Diều</option>
+                    <option value="Chân trời sáng tạo">Chân trời sáng tạo</option>
+                    <option value="Sách Giáo Khoa cũ (2006)">SGK cũ (2006)</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>🎓 Lớp</label>
+                    <select id="grade">
+                        <option value="Lớp 1">Lớp 1</option>
+                        <option value="Lớp 2">Lớp 2</option>
+                        <option value="Lớp 3">Lớp 3</option>
+                        <option value="Lớp 4">Lớp 4</option>
+                        <option value="Lớp 5">Lớp 5</option>
+                        <option value="Lớp 6">Lớp 6</option>
+                        <option value="Lớp 8">Lớp 8</option>
+                        <option value="Lớp 10">Lớp 10</option>
+                        <option value="Lớp 12">Lớp 12</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 2;">
+                    <label>📖 Môn học</label>
+                    <input type="text" id="subject" placeholder="Toán, Tiếng Việt...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>📝 Tên bài học</label>
+                <input type="text" id="lessonName" placeholder="Ví dụ: Phép cộng trong phạm vi 10">
+            </div>
+
+            <div class="form-group">
+                <label>⚡ Hoạt động</label>
+                <select id="activityType" onchange="toggleQuestionCount()">
+                    <option value="practice">Luyện tập (Practice)</option>
+                    <option value="warm-up">Khởi động (Warm-up)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>🎮 Loại Game</label>
+                <select id="gameType">
+                    <option value="quiz">Trắc nghiệm (Quiz)</option>
+                    <option value="simulation">Mô phỏng (Kéo thả)</option>
+                    <option value="sequencing">Sắp xếp thứ tự</option>
+                    <option value="matching">Ghép đôi</option>
+                    <option value="wheel">Vòng quay may mắn</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="qCountGroup">
+                <label>🔢 Số lượng câu hỏi</label>
+                <input type="number" id="questionCount" value="5" min="1" max="20">
+            </div>
+
+            <button class="btn-submit" id="submitBtn" onclick="generateGame()">🚀 TẠO DỮ LIỆU GAME</button>
         </div>
 
-        <div class="input-area">
-            <textarea id="userInput" rows="2" placeholder="Nhập câu hỏi của bạn tại đây..."></textarea>
-            <button id="sendBtn" onclick="sendMessage()">GỬI 🚀</button>
+        <div class="output-panel">
+            <div id="loading" class="loading">
+                <div style="font-size: 2rem;">🤖</div>
+                <div>Đang đọc sách & soạn game...</div>
+            </div>
+
+            <div id="resultArea">
+                <div style="text-align: center; color: #94a3b8; margin-top: 100px;">
+                    Kết quả dữ liệu JSON sẽ hiển thị ở đây.
+                </div>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <div style="margin-bottom: 10px;">© 2025 Copyright by My Company</div>
-        <div class="social-links">
-            <a href="https://facebook.com" target="_blank">Facebook</a> | 
-            <a href="https://zalo.me" target="_blank">Zalo Support</a>
-        </div>
-    </footer>
-
     <script>
-        // ===========================================================
-        // CẤU HÌNH QUAN TRỌNG - HÃY SỬA DÒNG DƯỚI ĐÂY
-        // ===========================================================
-        
-        // Dán link Google Cloud Run của bạn vào giữa hai dấu ngoặc kép
-        // Ví dụ: "https://api-backend-ai-uc.a.run.app"
+        // ==========================================
+        // Dán link Google Cloud của bạn vào đây
         const BACKEND_URL = "https://edutoolai-830472878190.us-central1.run.app"; 
+        // ==========================================
 
-        // ===========================================================
+        // Ẩn/Hiện ô nhập số lượng câu hỏi
+        function toggleQuestionCount() {
+            const type = document.getElementById('activityType').value;
+            const group = document.getElementById('qCountGroup');
+            group.style.display = (type === 'practice') ? 'flex' : 'none';
+        }
 
-        const chatContainer = document.getElementById('chatContainer');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const licenseInput = document.getElementById('licenseKey');
+        async function generateGame() {
+            // 1. Thu thập dữ liệu từ Form
+            const config = {
+                license_key: document.getElementById('licenseKey').value.trim(),
+                bookSeries: document.getElementById('bookSeries').value,
+                grade: document.getElementById('grade').value,
+                subject: document.getElementById('subject').value.trim(),
+                lessonName: document.getElementById('lessonName').value.trim(),
+                activityType: document.getElementById('activityType').value,
+                gameType: document.getElementById('gameType').value,
+                questionCount: parseInt(document.getElementById('questionCount').value) || 5
+            };
 
-        // Hàm gửi tin nhắn
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            const licenseKey = licenseInput.value.trim();
-
-            // Kiểm tra đầu vào
-            if (!message) return;
-            if (!licenseKey) {
-                alert("⚠️ Vui lòng nhập Mã Kích Hoạt trước khi chat!");
-                licenseInput.focus();
+            if (!config.license_key || !config.subject || !config.lessonName) {
+                alert("Vui lòng nhập đầy đủ: Mã kích hoạt, Môn học và Tên bài!");
                 return;
             }
 
-            // 1. Hiển thị tin nhắn người dùng
-            addMessage(message, 'user-message');
-            userInput.value = ''; // Xóa ô nhập
-            
-            // Khóa nút gửi
-            sendBtn.disabled = true;
-            sendBtn.innerText = "Đang suy nghĩ...";
+            // 2. Gửi yêu cầu
+            const btn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const resultArea = document.getElementById('resultArea');
+
+            btn.disabled = true;
+            loading.style.display = 'flex';
+            resultArea.innerHTML = '';
 
             try {
-                // 2. Gọi API sang Google Cloud
-                // Lưu ý: Không có dấu gạch chéo / ở cuối BACKEND_URL
-                const response = await fetch(`${BACKEND_URL}/chat`, {
+                // Chú ý: Endpoint đổi thành /generate-game
+                const response = await fetch(`${BACKEND_URL}/generate-game`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        license_key: licenseKey
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
                 });
 
                 const data = await response.json();
 
-                // 3. Xử lý kết quả
                 if (response.ok) {
-                    addMessage(data.reply, 'ai-message');
+                    // Hiển thị đẹp
+                    const html = `
+                        <div class="result-title">${data.title}</div>
+                        <div class="result-desc">${data.description}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    resultArea.innerHTML = html;
                 } else {
-                    // Lỗi từ server trả về (ví dụ sai mã Key)
-                    addMessage(`⚠️ Lỗi: ${data.detail || "Không thể xử lý yêu cầu"}`, 'error-message');
+                    resultArea.innerHTML = `<div style="color:red">⚠️ Lỗi: ${data.detail || "Server Error"}</div>`;
                 }
 
             } catch (error) {
-                console.error("Lỗi kết nối:", error);
-                addMessage("⚠️ Không thể kết nối đến Server. Vui lòng kiểm tra lại đường truyền hoặc URL.", 'error-message');
+                resultArea.innerHTML = `<div style="color:red">⚠️ Không thể kết nối Server!</div>`;
+                console.error(error);
             } finally {
-                // Mở lại nút gửi
-                sendBtn.disabled = false;
-                sendBtn.innerText = "GỬI 🚀";
-                scrollToBottom();
+                btn.disabled = false;
+                loading.style.display = 'none';
             }
         }
-
-        // Hàm thêm tin nhắn vào giao diện
-        function addMessage(text, className) {
-            const div = document.createElement('div');
-            div.className = `message ${className}`;
-            div.innerText = text;
-            chatContainer.appendChild(div);
-            scrollToBottom();
-        }
-
-        // Hàm tự cuộn xuống dưới cùng
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // Cho phép bấm Enter để gửi (nhưng giữ Shift+Enter để xuống dòng)
-        userInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
     </script>
 </body>
 </html>
