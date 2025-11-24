@@ -3,38 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trợ Lý AI - Git Version</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Chatbot Pro</title>
+    <style>
+        /* --- PHẦN GIAO DIỆN (CSS) --- */
+        :root {
+            --primary-color: #2563eb; /* Màu xanh chủ đạo */
+            --bg-color: #f3f4f6;
+            --chat-bg: #ffffff;
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Chiều cao full màn hình */
+            color: var(--text-color);
+        }
+
+        /* HEADER */
+        header {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: #4b5563;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background-color: #f3f4f6;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .home-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            flex: 1; /* Chiếm hết khoảng trống còn lại */
+            max-width: 900px;
+            width: 100%;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        /* LICENSE BOX */
+        .license-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .license-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .license-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* CHAT AREA */
+        .chat-window {
+            flex: 1;
+            background: var(--chat-bg);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto; /* Cho phép cuộn dọc */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .ai-message {
+            background-color: #f3f4f6;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            color: #991b1b;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* INPUT AREA */
+        .input-area {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            resize: none;
+            font-family: inherit;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        .social-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: 0.2s;
+        }
+
+        .social-links a:hover {
+            color: white;
+        }
+    </style>
 </head>
 <body>
+
     <header>
-        <div class="logo">My AI App</div>
-        <nav><a href="#" class="nav-btn" onclick="window.location.reload()">🏠 Home</a></nav>
+        <div class="logo">🤖 Trợ Lý AI</div>
+        <a href="#" onclick="window.location.reload()" class="home-btn">🏠 Trang chủ</a>
     </header>
 
     <div class="container">
         <div class="license-box">
-            <input type="text" id="licenseKey" class="license-input" placeholder="Nhập Mã Kích Hoạt...">
-            <span class="license-status">🔒 Secure</span>
+            <span style="font-size: 1.2rem;">🔑</span>
+            <input type="text" id="licenseKey" class="license-input" placeholder="Nhập mã kích hoạt (Ví dụ: VIP-2025)...">
         </div>
 
         <div class="chat-window" id="chatContainer">
-            <div class="message ai-msg">Xin chào! Hệ thống đã sẵn sàng từ GitHub.</div>
+            <div class="message ai-message">
+                Xin chào! Tôi là trợ lý ảo của bạn. Hãy nhập mã kích hoạt để bắt đầu trò chuyện nhé.
+            </div>
         </div>
 
         <div class="input-area">
-            <textarea id="userInput" rows="2" placeholder="Nhập câu hỏi..."></textarea>
-            <button id="send-btn" onclick="sendMessage()">GỬI</button>
+            <textarea id="userInput" rows="2" placeholder="Nhập câu hỏi của bạn tại đây..."></textarea>
+            <button id="sendBtn" onclick="sendMessage()">GỬI 🚀</button>
         </div>
     </div>
 
     <footer>
-        <div>© 2025 AI Startup.</div>
+        <div style="margin-bottom: 10px;">© 2025 Copyright by My Company</div>
         <div class="social-links">
-            <a href="#">Facebook</a> | <a href="#">Zalo</a>
+            <a href="https://facebook.com" target="_blank">Facebook</a> | 
+            <a href="https://zalo.me" target="_blank">Zalo Support</a>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // ===========================================================
+        // CẤU HÌNH QUAN TRỌNG - HÃY SỬA DÒNG DƯỚI ĐÂY
+        // ===========================================================
+        
+        // Dán link Google Cloud Run của bạn vào giữa hai dấu ngoặc kép
+        // Ví dụ: "https://api-backend-ai-uc.a.run.app"
+        const BACKEND_URL = "https://edutoolai-830472878190.us-central1.run.app"; 
+
+        // ===========================================================
+
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const licenseInput = document.getElementById('licenseKey');
+
+        // Hàm gửi tin nhắn
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            const licenseKey = licenseInput.value.trim();
+
+            // Kiểm tra đầu vào
+            if (!message) return;
+            if (!licenseKey) {
+                alert("⚠️ Vui lòng nhập Mã Kích Hoạt trước khi chat!");
+                licenseInput.focus();
+                return;
+            }
+
+            // 1. Hiển thị tin nhắn người dùng
+            addMessage(message, 'user-message');
+            userInput.value = ''; // Xóa ô nhập
+            
+            // Khóa nút gửi
+            sendBtn.disabled = true;
+            sendBtn.innerText = "Đang suy nghĩ...";
+
+            try {
+                // 2. Gọi API sang Google Cloud
+                // Lưu ý: Không có dấu gạch chéo / ở cuối BACKEND_URL
+                const response = await fetch(`${BACKEND_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        license_key: licenseKey
+                    })
+                });
+
+                const data = await response.json();
+
+                // 3. Xử lý kết quả
+                if (response.ok) {
+                    addMessage(data.reply, 'ai-message');
+                } else {
+                    // Lỗi từ server trả về (ví dụ sai mã Key)
+                    addMessage(`⚠️ Lỗi: ${data.detail || "Không thể xử lý yêu cầu"}`, 'error-message');
+                }
+
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                addMessage("⚠️ Không thể kết nối đến Server. Vui lòng kiểm tra lại đường truyền hoặc URL.", 'error-message');
+            } finally {
+                // Mở lại nút gửi
+                sendBtn.disabled = false;
+                sendBtn.innerText = "GỬI 🚀";
+                scrollToBottom();
+            }
+        }
+
+        // Hàm thêm tin nhắn vào giao diện
+        function addMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            div.innerText = text;
+            chatContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        // Hàm tự cuộn xuống dưới cùng
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Cho phép bấm Enter để gửi (nhưng giữ Shift+Enter để xuống dòng)
+        userInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 </html>
